@@ -10,17 +10,6 @@
     "lint": "eslint **/*.js",
     "lint:fix": "eslint --fix **/*.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Evgeniya-star-35/finally-node.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Evgeniya-star-35/finally-node/issues"
-  },
-  "homepage": "https://github.com/Evgeniya-star-35/finally-node#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
