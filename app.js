@@ -4,7 +4,7 @@ import cors from "cors";
 import helmet from "helmet";
 import { HttpCode, LIMIT_JSON } from "./lib/constants";
 
-import { transactionRoute } from "./routes";
+import { transactionRoute, usersRoute } from "./routes";
 
 const app = express();
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
@@ -21,6 +21,7 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.send("Hello world");
 });
+app.use("/api/users", usersRoute);
 app.use("/api/transaction", transactionRoute);
 
 app.use((req, res) => {
