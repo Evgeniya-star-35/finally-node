@@ -1,3 +1,4 @@
 import { updateBalance } from "./transaction";
+import { authControllers } from "./auth";
 
-export { updateBalance };
+export { updateBalance, authControllers };

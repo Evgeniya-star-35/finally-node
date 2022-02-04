@@ -1,3 +1,4 @@
 import transactionRoute from "./transactions";
+import usersRoute from "./users";
 
-export { transactionRoute };
+export { transactionRoute, usersRoute };
