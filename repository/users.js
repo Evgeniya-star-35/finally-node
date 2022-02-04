@@ -13,4 +13,8 @@ const create = async (body) => {
   return await user.save();
 };
 
-export default { findById, findByEmail, create };
+const updateToken = async (id, token, refreshToken) => {
+  return await User.updateOne({ _id: id }, { token, refreshToken });
+};
+
+export default { findById, findByEmail, create, updateToken };

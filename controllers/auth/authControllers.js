@@ -21,6 +21,34 @@ class AuthControllers {
       next(error);
     }
   }
+
+  async login(req, res, next) {
+    try {
+      const { email, password } = req.body;
+      const user = await authService.getUser(email, password);
+      if (!user) {
+        return res.status(HttpCode.UNAUTHORIZED).json({
+          status: "Unauthorized",
+          code: HttpCode.UNAUTHORIZED,
+          message: "Email or password is wrong",
+        });
+      }
+      const token = authService.createToken(user);
+      const refreshToken = authService.createRefreshToken(user);
+
+      await authService.setToken(user.id, token, refreshToken);
+
+      const { name, avatar } = user;
+
+      res.status(HttpCode.OK).json({
+        status: "OK",
+        code: HttpCode.OK,
+        data: { token, refreshToken, user: { name, email, avatar } },
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export default new AuthControllers();
