@@ -22,6 +22,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
+      required: false,
     },
     token: {
       type: String,
@@ -48,10 +49,6 @@ const userSchema = new Schema(
     verifyTokenEmail: {
       type: String,
       default: randomUUID(),
-    },
-    balance: {
-      type: Number,
-      default: 0,
     },
   },
   {

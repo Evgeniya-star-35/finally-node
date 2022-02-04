@@ -1,3 +1,5 @@
+import mongoose from "mongoose";
+
 const { Schema, model } = mongoose;
 
 const transactionSchema = new Schema(
@@ -6,6 +8,10 @@ const transactionSchema = new Schema(
       type: String,
       enum: ["incomes", "cost"],
       required: true,
+    },
+    balance: {
+      type: Number,
+      default: 0,
     },
     date: {
       type: String,
