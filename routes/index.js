@@ -1,3 +1,4 @@
 const usersRoute = require("./users");
+const transactionRoute = require("./transactions");
 
-module.exports = { usersRoute };
+module.exports = { usersRoute, transactionRoute };
