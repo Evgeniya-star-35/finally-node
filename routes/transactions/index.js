@@ -1,9 +1,10 @@
-// import express from "express";
-// import { guard } from "../../middlewares";
-// import { updateBalance } from "../../controllers";
+const express = require("express");
+const router = express.Router();
+const TransactionControllers = require("../../controllers/transaction");
+const { guard } = require("../../middlewares");
 
-// const router = express.Router();
+const transactionControllers = new TransactionControllers();
 
-// router.patch("/balance", updateBalance);
+router.post("/", guard, transactionControllers.createTransaction);
 
-// export default router;
+module.exports = router;

@@ -1,3 +1,3 @@
-// import updateBalance from "./balance";
+const TransactionControllers = require("./transactionController");
 
-// export { updateBalance };
+module.exports = TransactionControllers;

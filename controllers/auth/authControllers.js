@@ -1,6 +1,6 @@
 const { HttpCode } = require("../../lib/constants");
 const authService = require("../../service/auth");
-const createBalance = require("../../repository/users");
+const Users = require("../../repository/users");
 
 class AuthControllers {
   async registration(req, res, next) {
@@ -95,7 +95,7 @@ class AuthControllers {
     try {
       const userId = req.user.id;
       const userBalance = req.body.balance;
-      const result = await createBalance(userId, userBalance);
+      const result = await Users.createBalance(userId, userBalance);
       if (result) {
         return res.status(HttpCode.OK).json({
           status: "success",

@@ -1,4 +1,4 @@
-// import { updateBalance } from "./transaction";
 const AuthControllers = require("./auth");
+const TransactionControllers = require("./transaction");
 
-module.exports = AuthControllers;
+module.exports = { AuthControllers, TransactionControllers };
