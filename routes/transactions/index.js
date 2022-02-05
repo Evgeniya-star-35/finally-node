@@ -1,9 +1,9 @@
-import express from "express";
-import { guard } from "../../middlewares";
-import { updateBalance } from "../../controllers";
+// import express from "express";
+// import { guard } from "../../middlewares";
+// import { updateBalance } from "../../controllers";
 
-const router = express.Router();
+// const router = express.Router();
 
-router.patch("/balance", guard, updateBalance);
+// router.patch("/balance", updateBalance);
 
-export default router;
+// export default router;

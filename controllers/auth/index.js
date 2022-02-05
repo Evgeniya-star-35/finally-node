@@ -1,3 +1,3 @@
-import authControllers from "./authControllers";
+const AuthControllers = require("./authControllers");
 
-export { authControllers };
+module.exports = AuthControllers;

@@ -1,4 +1,4 @@
-import guard from "./guard";
-import limiter from "./rate-limit";
+const guard = require("./guard");
+const limiter = require("./rate-limit");
 
-export { guard, limiter };
+module.exports = { guard, limiter };

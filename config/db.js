@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
+
 const { connect, connection } = mongoose;
 
 const uri = process.env.URI_DB;
@@ -26,4 +27,4 @@ process.on("SIGINT", async () => {
   process.exit(1);
 });
 
-export default db;
+module.exports = db;

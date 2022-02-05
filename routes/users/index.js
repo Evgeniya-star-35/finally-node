@@ -1,10 +1,11 @@
-import { Router } from "express";
-import { authControllers } from "../../controllers";
-import { limiter } from "../../middlewares";
-
+const express = require("express");
+const router = express.Router();
+const AuthControllers = require("../../controllers");
+const { limiter } = require("../../middlewares");
+const { guard } = require("../../middlewares");
 // import { validationUserLogin } from "./validation";
 
-const router = new Router();
+const authControllers = new AuthControllers();
 
 router.post(
   "/registration",
@@ -12,5 +13,6 @@ router.post(
   authControllers.registration
 );
 router.post("/login", authControllers.login);
+router.patch("/balance", guard, authControllers.updateBalance);
 
-export default router;
+module.exports = router;

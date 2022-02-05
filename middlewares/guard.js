@@ -1,39 +1,33 @@
-import jwt from "jsonwebtoken";
-import findById from "../repository/users";
-import { HttpCode } from "../lib/constants";
+const passport = require("passport");
+require("../config/password");
+const { HttpCode } = require("../lib/constants");
 
-const SECRET_KEY = process.env.JWT_SECRET_KEY;
+const guard = (req, res, next) => {
+  passport.authenticate("jwt", { session: false }, (error, user) => {
+    const headerAuth = req.get("Authorization");
+    let token = null;
+    if (headerAuth) {
+      token = headerAuth.split(" ")[1];
+    }
 
-const verifyToken = (token) => {
-  try {
-    const verify = jwt.verify(token, SECRET_KEY);
-    return !!verify;
-  } catch (error) {
-    return false;
-  }
+    if (error) {
+      return res.status(HttpCode.UNAUTHORIZED).json({
+        status: "error",
+        code: HttpCode.UNAUTHORIZED,
+        message: "Not authorized",
+      });
+    }
+    if (!user || token !== user?.token) {
+      return res.status(HttpCode.UNAUTHORIZED).json({
+        status: "error",
+        code: HttpCode.UNAUTHORIZED,
+        message: "Unvalid token",
+      });
+    }
+
+    req.user = user;
+    return next();
+  })(req, res, next);
 };
 
-const guard = async (req, res, next) => {
-  const token = req.get("Authorization")?.split(" ")[1];
-  const isValidToken = verifyToken(token);
-  if (!isValidToken) {
-    return res.status(HttpCode.UNAUTHORIZED).json({
-      status: "error",
-      code: HttpCode.UNAUTHORIZED,
-      message: "Not authorized",
-    });
-  }
-  const payload = jwt.decode(token);
-  const user = await findById(payload.id);
-  if (!user || user.token !== token) {
-    return res.status(HttpCode.UNAUTHORIZED).json({
-      status: "error",
-      code: HttpCode.UNAUTHORIZED,
-      message: "Not authorized",
-    });
-  }
-  req.user = user;
-  next();
-};
-
-export default guard;
+module.exports = guard;

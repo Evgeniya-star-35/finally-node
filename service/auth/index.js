@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import repositoryUsers from "../../repository/users";
+const jwt = require("jsonwebtoken");
+const repositoryUsers = require("../../repository/users");
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 
 class AuthService {
@@ -25,7 +25,7 @@ class AuthService {
   createToken(user) {
     const { id, email } = user;
     const payload = { id, email };
-    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
+    const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "6h" });
     return token;
   }
 
@@ -41,4 +41,4 @@ class AuthService {
   }
 }
 
-export default new AuthService();
+module.exports = new AuthService();
