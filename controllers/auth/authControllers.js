@@ -50,6 +50,47 @@ class AuthControllers {
       next(error);
     }
   }
+  async logout(req, res, next) {
+    try {
+      const id = req.user.id;
+      await authService.setToken(
+        id,
+        (req.user.token = null),
+        (req.user.refreshToken = null)
+      );
+
+      return res.status(200).json({ code: 200, message: "Logout Success" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async current(req, res) {
+    const { email, subscription } = req.user;
+    const userToken = await req.user.token;
+    const userRefreshToken = await req.user.refreshToken;
+
+    const userId = await req.user.id;
+    if (!userToken || !userRefreshToken || !userId) {
+      return res.status(HttpCode.UNAUTORIZED).json({
+        status: "error",
+        code: HttpCode.UNAUTORIZED,
+        message: "Not authorized",
+      });
+    }
+
+    res.status(HttpCode.OK).json({
+      status: "success",
+      code: HttpCode.OK,
+      data: {
+        user: {
+          email,
+          subscription,
+        },
+      },
+    });
+  }
+
   async updateBalance(req, res, next) {
     try {
       const userId = req.user.id;
