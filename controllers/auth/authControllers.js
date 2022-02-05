@@ -72,9 +72,9 @@ class AuthControllers {
 
     const userId = await req.user.id;
     if (!userToken || !userRefreshToken || !userId) {
-      return res.status(HttpCode.UNAUTORIZED).json({
+      return res.status(HttpCode.UNAUTHORIZED).json({
         status: "error",
-        code: HttpCode.UNAUTORIZED,
+        code: HttpCode.UNAUTHORIZED,
         message: "Not authorized",
       });
     }
