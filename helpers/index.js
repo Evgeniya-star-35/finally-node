@@ -1,3 +1,3 @@
-import colors from "./colors";
+const colors = require("./colors");
 
-export { colors };
+module.exports = { colors };

@@ -1,5 +1,5 @@
-import { rateLimit } from "express-rate-limit";
-import { HttpCode } from "../lib/constants";
+const { rateLimit } = require("express-rate-limit");
+const { HttpCode } = require("../lib/constants");
 
 const limiter = (duration, limit) => {
   return rateLimit({
@@ -15,4 +15,4 @@ const limiter = (duration, limit) => {
     },
   });
 };
-export default limiter;
+module.exports = limiter;

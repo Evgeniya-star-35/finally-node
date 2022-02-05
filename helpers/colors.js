@@ -1,3 +1,3 @@
-import colors from "colors";
+const colors = require("colors");
 
-export default colors;
+module.exports = colors;

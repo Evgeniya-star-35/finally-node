@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "cross-env NODE_ENV=production node -r dotenv/config --es-module-specifier-resolution=node ./bin/server.js",
     "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config --es-module-specifier-resolution=node ./bin/server.js",
@@ -25,7 +24,10 @@
     "mongodb": "^4.3.1",
     "mongoose": "^6.1.10",
     "morgan": "^1.10.0",
-    "multer": "^1.4.4"
+    "multer": "^1.4.4",
+    "passport": "^0.5.2",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.0"
   },
   "devDependencies": {
     "eslint": "^8.8.0",

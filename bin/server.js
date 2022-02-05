@@ -1,7 +1,6 @@
-import { mkdir } from "fs/promises";
-import { colors } from "../helpers";
-import app from "../app";
-import db from "../config/db";
+const { colors } = require("../helpers");
+const app = require("../app");
+const db = require("../config/db");
 
 const PORT = process.env.PORT || 5050;
 

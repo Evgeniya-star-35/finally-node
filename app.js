@@ -1,10 +1,10 @@
-import express from "express";
-import logger from "morgan";
-import cors from "cors";
-import helmet from "helmet";
-import { HttpCode, LIMIT_JSON } from "./lib/constants";
+const express = require("express");
+const logger = require("morgan");
+const cors = require("cors");
+const helmet = require("helmet");
+const { HttpCode, LIMIT_JSON } = require("./lib/constants");
 
-import { transactionRoute, usersRoute } from "./routes";
+const { usersRoute } = require("./routes");
 
 const app = express();
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
@@ -22,7 +22,7 @@ app.get("/", (req, res) => {
   res.send("Hello world");
 });
 app.use("/api/users", usersRoute);
-app.use("/api/transaction", transactionRoute);
+// app.use("/api/transaction", transactionRoute);
 
 app.use((req, res) => {
   res
@@ -38,4 +38,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-export default app;
+module.exports = app;

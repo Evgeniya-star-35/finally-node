@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
-import gravatar from "gravatar";
-import { randomUUID } from "crypto";
-import bcrypt from "bcryptjs";
+const mongoose = require("mongoose");
+const gravatar = require("gravatar");
+const { randomUUID } = require("crypto");
+const bcrypt = require("bcryptjs");
 
 const { Schema, model } = mongoose;
 
@@ -22,7 +22,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: false,
+      required: [true, "Password is required"],
     },
     token: {
       type: String,
@@ -49,6 +49,10 @@ const userSchema = new Schema(
     verifyTokenEmail: {
       type: String,
       default: randomUUID(),
+    },
+    balance: {
+      type: Number,
+      default: 0,
     },
   },
   {
@@ -79,4 +83,4 @@ userSchema.methods.isValidPassword = async function (password) {
 
 const User = model("user", userSchema);
 
-export default User;
+module.exports = User;

@@ -1,4 +1,3 @@
-import transactionRoute from "./transactions";
-import usersRoute from "./users";
+const usersRoute = require("./users");
 
-export { transactionRoute, usersRoute };
+module.exports = { usersRoute };
