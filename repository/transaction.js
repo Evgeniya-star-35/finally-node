@@ -1,13 +1,7 @@
-// import Transaction from "../model/transaction";
+const Transaction = require("../model/transaction");
 
-// const createBalance = async (id, balance) => {
-//   const result = await Transaction.updateOne(
-//     { _id: id },
+const createTransaction = async (body, owner) => {
+  return await Transaction.create({ ...body, owner });
+};
 
-//     { balance },
-//     { returnDocument: "after" }
-//   );
-//   return result;
-// };
-
-// export default createBalance;
+module.exports = createTransaction;

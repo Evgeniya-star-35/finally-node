@@ -5,6 +5,7 @@ const helmet = require("helmet");
 const { HttpCode, LIMIT_JSON } = require("./lib/constants");
 
 const { usersRoute } = require("./routes");
+const { transactionRoute } = require("./routes");
 
 const app = express();
 const formatsLogger = app.get("env") === "development" ? "dev" : "short";
@@ -22,7 +23,7 @@ app.get("/", (req, res) => {
   res.send("Hello world");
 });
 app.use("/api/users", usersRoute);
-// app.use("/api/transaction", transactionRoute);
+app.use("/api/transaction", transactionRoute);
 
 app.use((req, res) => {
   res

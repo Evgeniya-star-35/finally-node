@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const AuthControllers = require("../../controllers");
+const AuthControllers = require("../../controllers/auth");
 const { limiter } = require("../../middlewares");
 const { guard } = require("../../middlewares");
 // import { validationUserLogin } from "./validation";
