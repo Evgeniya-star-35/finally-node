@@ -13,6 +13,10 @@ router.post(
   authControllers.registration
 );
 router.post("/login", authControllers.login);
+router.post("/logout", guard, authControllers.logout);
+
+router.get("/current", guard, authControllers.current);
+
 router.patch("/balance", guard, authControllers.updateBalance);
 
 module.exports = router;
