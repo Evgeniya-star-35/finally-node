@@ -7,4 +7,10 @@ const transactionControllers = new TransactionControllers();
 
 router.post("/", guard, transactionControllers.createTransaction);
 
+router.get(
+  "/period/:period",
+  guard,
+  transactionControllers.transactionByPeriod
+);
+
 module.exports = router;
