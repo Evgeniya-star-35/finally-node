@@ -6,6 +6,7 @@ const { guard } = require("../../middlewares");
 const transactionControllers = new TransactionControllers();
 
 router.post("/", guard, transactionControllers.createTransaction);
+router.delete("/:id", guard, transactionControllers.deleteTransaction);
 
 router.get(
   "/period/:period",
