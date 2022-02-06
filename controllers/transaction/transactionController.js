@@ -5,12 +5,9 @@ const Transaction = require("../../model/transaction");
 class TransactionControllers {
   async createTransaction(req, res, next) {
     try {
-      const newTransaction = { ...req.body.transaction, owner: req.user._id };
-      console.log(req.body);
-      console.log(1);
-      console.log(newTransaction);
+      const newTransaction = { ...req.body, owner: req.user._id };
       const resultTransaction = await Transaction.create(newTransaction);
-      const userId = req.body._id;
+      const userId = req.user._id;
       const userBalance = req.body.balance;
       const resultBalance = await User.createBalance(userId, userBalance);
       if (!resultBalance) {
@@ -20,7 +17,6 @@ class TransactionControllers {
           message: "Not Found",
         });
       }
-      console.log(2);
       const { balance } = resultBalance;
       res.status(HttpCode.CREATED).json({
         status: "Created",
