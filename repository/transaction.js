@@ -4,12 +4,9 @@ const createTransaction = async (body, owner) => {
   return await Transaction.create({ ...body, owner });
 };
 
-
 const deleteTransaction = async (id) => {
   return await Transaction.findByIdAndRemove({ _id: id });
 };
-
-
 
 const getTransactionByPeriod = async (owner, period) => {
   return await Transaction.find({ owner, period });
@@ -25,4 +22,3 @@ module.exports = {
   getTransactionByDate,
   deleteTransaction,
 };
-
