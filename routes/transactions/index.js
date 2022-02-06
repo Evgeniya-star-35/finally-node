@@ -13,4 +13,6 @@ router.get(
   transactionControllers.transactionByPeriod
 );
 
+router.get("/:date", guard, transactionControllers.transactionsByDate);
+
 module.exports = router;

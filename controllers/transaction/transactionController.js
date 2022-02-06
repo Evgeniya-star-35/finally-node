@@ -1,4 +1,5 @@
 const User = require("../../repository/users");
+// const repositoryTransactions = require("../../repository/transaction");
 const { HttpCode } = require("../../lib/constants");
 const Transaction = require("../../model/transaction");
 
@@ -30,11 +31,20 @@ class TransactionControllers {
     }
   }
 
-  // async transactionsByDate(req, res, next)=>{
-  //   try{
-  //     const {date} = req.
-  //   }
-  // }
+  async transactionsByDate(req, res, next) {
+    try {
+      const { date } = req.params;
+      const result = await Transaction.find({
+        owner: req.user._id,
+        date,
+      });
+      return res
+        .status(HttpCode.OK)
+        .json({ status: "success", code: HttpCode.OK, result });
+    } catch (error) {
+      next();
+    }
+  }
 
   async transactionByPeriod(req, res, next) {
     try {

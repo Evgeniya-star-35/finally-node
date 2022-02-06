@@ -8,4 +8,12 @@ const getTransactionByPeriod = async (owner, period) => {
   return await Transaction.find({ owner, period });
 };
 
-module.exports = { createTransaction, getTransactionByPeriod };
+const getTransactionByDate = async (owner, date) => {
+  return await Transaction.find({ owner, date });
+};
+
+module.exports = {
+  createTransaction,
+  getTransactionByPeriod,
+  getTransactionByDate,
+};
