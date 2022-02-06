@@ -6,13 +6,13 @@ class EmailService {
 
     switch (env) {
       case "development":
-        this.link = "http://localhost:4040";
+        this.link = process.env.PORT;
         break;
       case "production":
-        this.link = "https://finally-node.herokuapp.com";
+        this.link = process.env.BACK_BASE;
         break;
       default:
-        this.link = "http://localhost:4040";
+        this.link = process.env.LINK_HOST_DEFAULT;
         break;
     }
   }
