@@ -8,4 +8,12 @@ const transactionControllers = new TransactionControllers();
 router.post("/", guard, transactionControllers.createTransaction);
 router.delete("/:id", guard, transactionControllers.deleteTransaction);
 
+router.get(
+  "/period/:period",
+  guard,
+  transactionControllers.transactionByPeriod
+);
+
+router.get("/:date", guard, transactionControllers.transactionsByDate);
+
 module.exports = router;

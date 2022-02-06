@@ -1,5 +1,8 @@
 const User = require("../../repository/users");
+
 const Transaction = require("../../repository/transaction");
+
+
 const { HttpCode } = require("../../lib/constants");
 
 class TransactionControllers {
@@ -30,6 +33,7 @@ class TransactionControllers {
     }
   }
 
+
   async deleteTransaction(req, res, next) {
     try {
       const { id } = req.params;
@@ -46,6 +50,52 @@ class TransactionControllers {
         .json({ code: HttpCode.OK, message: "Your transaction was delete" });
     } catch (error) {
       console.log(error.message);
+
+  async transactionsByDate(req, res, next) {
+    try {
+      const { date } = req.params;
+      const result = await Transaction.find({
+        owner: req.user._id,
+        date,
+      });
+      return res
+        .status(HttpCode.OK)
+        .json({ status: "success", code: HttpCode.OK, result });
+    } catch (error) {
+      next();
+    }
+  }
+
+  async transactionByPeriod(req, res, next) {
+    try {
+      const { period } = req.params;
+
+      const periodLength = period.length;
+      if (period) {
+        if (periodLength <= 4) {
+          const year = period;
+          const result = await Transaction.find({ owner: req.user._id, year });
+          return res
+            .status(HttpCode.OK)
+            .json({ status: "success", code: HttpCode.OK, result });
+        }
+
+        if (periodLength > 5) {
+          const newPeriod = period.split("-");
+          const month = newPeriod[0];
+          const year = newPeriod[1];
+          const result = await Transaction.find({
+            owner: req.user._id,
+            year,
+            month,
+          });
+          return res
+            .status(HttpCode.OK)
+            .json({ status: "success", code: HttpCode.OK, result });
+        }
+      }
+    } catch (error) {
+
       next();
     }
   }
