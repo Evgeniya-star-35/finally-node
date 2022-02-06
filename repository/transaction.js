@@ -4,4 +4,8 @@ const createTransaction = async (body, owner) => {
   return await Transaction.create({ ...body, owner });
 };
 
-module.exports = createTransaction;
+const getTransactionByPeriod = async (owner, period) => {
+  return await Transaction.find({ owner, period });
+};
+
+module.exports = { createTransaction, getTransactionByPeriod };

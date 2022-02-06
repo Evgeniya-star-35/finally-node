@@ -29,6 +29,45 @@ class TransactionControllers {
       next(error);
     }
   }
+
+  // async transactionsByDate(req, res, next)=>{
+  //   try{
+  //     const {date} = req.
+  //   }
+  // }
+
+  async transactionByPeriod(req, res, next) {
+    try {
+      const { period } = req.params;
+
+      const periodLength = period.length;
+      if (period) {
+        if (periodLength <= 4) {
+          const year = period;
+          const result = await Transaction.find({ owner: req.user._id, year });
+          return res
+            .status(HttpCode.OK)
+            .json({ status: "success", code: HttpCode.OK, result });
+        }
+
+        if (periodLength > 5) {
+          const newPeriod = period.split("-");
+          const month = newPeriod[0];
+          const year = newPeriod[1];
+          const result = await Transaction.find({
+            owner: req.user._id,
+            year,
+            month,
+          });
+          return res
+            .status(HttpCode.OK)
+            .json({ status: "success", code: HttpCode.OK, result });
+        }
+      }
+    } catch (error) {
+      next();
+    }
+  }
 }
 
 module.exports = TransactionControllers;
