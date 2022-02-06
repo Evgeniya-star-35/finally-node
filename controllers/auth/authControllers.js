@@ -1,4 +1,3 @@
-const path = require("path");
 const { HttpCode } = require("../../lib/constants");
 const authService = require("../../service/auth");
 const Users = require("../../repository/users");
