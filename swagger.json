@@ -618,12 +618,13 @@
             "email": {
               "type": "string",
               "description": "User's email",
-              "format": "email"
+              "format": "email",
+              "example": "amyr4ik28@ukr.net"
             },
             "password": {
               "type": "string",
               "description": "User's password",
-              "example": "qwerty123"
+              "example": "27Love27"
             }
           }
         },
@@ -687,12 +688,13 @@
             "email": {
               "type": "string",
               "description": "User's email",
-              "format": "email"
+              "format": "email",
+              "example": "amyr4ik28@ukr.net"
             },
             "password": {
               "type": "string",
               "description": "User's password",
-              "example": "qwerty123"
+              "example": "27Love27"
             }
           }
         },
