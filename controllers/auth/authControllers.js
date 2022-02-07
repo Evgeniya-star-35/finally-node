@@ -31,7 +31,6 @@ class AuthControllers {
       );
 
       delete userData.verifyTokenEmail;
-
       return res.status(HttpCode.CREATED).json({
         status: "success",
         code: HttpCode.CREATED,
