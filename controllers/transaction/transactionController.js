@@ -67,19 +67,13 @@ class TransactionControllers {
   async transactionByPeriod(req, res, next) {
     try {
       const { period } = req.params;
- // const owner = req.user._id;
+      // const owner = req.user._id;
       const periodLength = period.length;
 
       if (period) {
         if (periodLength <= 5) {
           const year = period;
-
           const result = await Transactions.find({ owner: req.user._id, year });
-           const result = await Transactions.find({
-            owner: req.user._id,
-            year,
-          });
-
           return res
             .status(HttpCode.OK)
             .json({ status: "success", code: HttpCode.OK, result });
@@ -100,7 +94,7 @@ class TransactionControllers {
         }
       }
     } catch (error) {
-next();
+      next();
     }
   }
 
@@ -139,7 +133,6 @@ next();
         balance,
       });
     } catch (error) {
-
       next();
     }
   }

@@ -4,7 +4,7 @@ const Users = require("../../repository/users");
 const queryString = require("query-string");
 const axios = require("axios");
 const EmailService = require("../../service/email/service");
-const { CreateSenderSendGrid } = require("../../service/email/sender"
+const { CreateSenderSendGrid } = require("../../service/email/sender");
 
 class AuthControllers {
   async registration(req, res, next) {
@@ -134,7 +134,6 @@ class AuthControllers {
     }
   }
 
-
   async googleAuth(_req, res, next) {
     try {
       const stringifiedParams = queryString.stringify({
@@ -151,8 +150,12 @@ class AuthControllers {
       return res.redirect(
         `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
       );
-      
-async googleRedirect(req, res, next) {
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async googleRedirect(req, res, next) {
     try {
       const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
       const urlObj = new URL(fullUrl);
@@ -204,7 +207,11 @@ async googleRedirect(req, res, next) {
       return res.redirect(
         `${process.env.FRONTEND_URL}?email=${userData.data.email}`
       );
-      
+    } catch (error) {
+      next(error);
+    }
+  }
+
   async verifyUser(req, res, next) {
     try {
       const userFromToken = await Users.findByVerifyToken(req.params.token);
@@ -221,13 +228,12 @@ async googleRedirect(req, res, next) {
         code: HttpCode.BAD_REQUEST,
         data: { message: "Invalid token" },
       });
-
     } catch (error) {
       next(error);
     }
   }
 
-async repeatVerifyUser(req, res, next) {
+  async repeatVerifyUser(req, res, next) {
     try {
       const user = await Users.findByEmail(req.body.email);
       if (user) {
@@ -261,7 +267,6 @@ async repeatVerifyUser(req, res, next) {
         code: HttpCode.NOT_FOUND,
         message: "User with email not found",
       });
-
     } catch (error) {
       next(error);
     }
