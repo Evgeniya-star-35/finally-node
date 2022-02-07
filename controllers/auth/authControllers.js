@@ -182,30 +182,27 @@ class AuthControllers {
         },
       });
 
-      // const { email, name, picture, id } = userData.data;
+      const { email, name, picture, id } = userData.data;
 
-      // const user = await Users.findByEmail(email);
+      const user = await Users.findByEmail(email);
 
-      // if (!user) {
-      //   const newUser = await Users.create({ email, name, password: id });
-      //   const idUser = newUser.id;
-      //   await Users.updateGoogleUser(idUser, picture);
-      //   const token = createToken(idUser);
-      //   const refreshToken = createRefreshToken(idUser);
-      //   const userToken = await Users.updateToken(idUser, token, refreshToken);
-      //   return res.redirect(
-      //     `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
-      //   );
-      // }
-      // const idUser = user.id;
-      // const token = createToken(idUser);
-      // const refreshToken = createRefreshToken(idUser);
-      // const userToken = await Users.updateToken(idUser, token, refreshToken);
-      // return res.redirect(
-      //   `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
-      // );
+      if (!user) {
+        const newUser = await Users.create({ email, name, password: id });
+        const idUser = newUser.id;
+        await Users.updateGoogleUser(idUser, picture);
+        const token = Users.createToken(idUser);
+        const refreshToken = Users.createRefreshToken(idUser);
+        const userToken = await Users.updateToken(idUser, token, refreshToken);
+        return res.redirect(
+          `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
+        );
+      }
+      const idUser = user.id;
+      const token = Users.createToken(idUser);
+      const refreshToken = Users.createRefreshToken(idUser);
+      const userToken = await Users.updateToken(idUser, token, refreshToken);
       return res.redirect(
-        `${process.env.FRONTEND_URL}?email=${userData.data.email}`
+        `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
       );
     } catch (error) {
       next(error);
