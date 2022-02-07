@@ -1,6 +1,6 @@
 const User = require("../../repository/users");
 const Transaction = require("../../repository/transaction");
-const Transactions = require("../../model/transaction");
+// const Transactions = require("../../model/transaction");
 const { HttpCode } = require("../../lib/constants");
 
 class TransactionControllers {
@@ -53,9 +53,10 @@ class TransactionControllers {
   async transactionsByDate(req, res, next) {
     try {
       const { date } = req.params;
-      const owner = req.user._id;
+      const { owner } = req.user._id;
 
       const result = await Transaction.getTransactionByDate(owner, date);
+
       return res
         .status(HttpCode.OK)
         .json({ status: "success", code: HttpCode.OK, result });
@@ -64,16 +65,31 @@ class TransactionControllers {
     }
   }
 
+  // async transactionsByMonth(req, res, next) {
+  //   try {
+  //     const { month } = req.params;
+  //     const { owner } = req.user._id;
+
+  //     const result = await Transaction.getTransactionByMonth(owner, month);
+
+  //     return res
+  //       .status(HttpCode.OK)
+  //       .json({ status: "success", code: HttpCode.OK, result });
+  //   } catch (error) {
+  //     next();
+  //   }
+  // }
+
   async transactionByPeriod(req, res, next) {
     try {
       const { period } = req.params;
-      // const owner = req.user._id;
+      const { owner } = req.user._id;
       const periodLength = period.length;
 
       if (period) {
         if (periodLength <= 5) {
           const year = period;
-          const result = await Transactions.find({ owner: req.user._id, year });
+          const result = await Transaction.getTransactionByPeriod(owner, year);
           return res
             .status(HttpCode.OK)
             .json({ status: "success", code: HttpCode.OK, result });
@@ -83,11 +99,12 @@ class TransactionControllers {
           const newPeriod = period.split("-");
           const month = newPeriod[0];
           const year = newPeriod[1];
-          const result = await Transactions.find({
-            owner: req.user._id,
+          const result = await TTransaction.getTransactionByPeriod(
+            owner,
             year,
-            month,
-          });
+            month
+          );
+          console.log(result);
           return res
             .status(HttpCode.OK)
             .json({ status: "success", code: HttpCode.OK, result });
