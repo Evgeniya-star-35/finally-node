@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const User = require("../model/user");
 
 const createBalance = async (id, balance) => {
@@ -20,6 +21,22 @@ const findByVerifyToken = async (verifyTokenEmail) => {
 const create = async (body) => {
   const user = new User(body);
   return await user.save();
+};
+
+const createToken = (id) => {
+  const payload = { id, test: "Hello" };
+  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
+    expiresIn: "2h",
+  });
+  return token;
+};
+
+const createRefreshToken = (id) => {
+  const payload = { id, test: "Hello again" };
+  const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
+    expiresIn: "10h",
+  });
+  return token;
 };
 
 const updateToken = async (id, token, refreshToken) => {
@@ -65,4 +82,6 @@ module.exports = {
   updateVerify,
   update,
   updateGoogleUser,
+  createToken,
+  createRefreshToken,
 };
