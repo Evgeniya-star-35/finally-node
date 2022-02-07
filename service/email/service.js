@@ -6,7 +6,7 @@ class EmailService {
 
     switch (env) {
       case "development":
-        this.link = process.env.PORT;
+        this.link = process.env.BASE_URL;
         break;
       case "production":
         this.link = process.env.BACK_BASE;
@@ -51,7 +51,8 @@ class EmailService {
   }
 
   async sendVerifyEmail(email, userName, verifyToken) {
-    const emailHtml = this.createEmailTemplate(userName, verifyToken);
+    const name = userName ?? "Friend";
+    const emailHtml = this.createEmailTemplate(name, verifyToken);
     const msg = {
       to: email,
       subject: "Verify your account",
