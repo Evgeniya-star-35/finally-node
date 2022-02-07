@@ -14,9 +14,9 @@ router.post(
 );
 router.post("/login", authControllers.login);
 router.post("/logout", guard, authControllers.logout);
-
+router.get("/verify/:token", authControllers.verifyUser);
+router.post("/verify", authControllers.repeatVerifyUser);
 router.get("/current", guard, authControllers.current);
-
 router.patch("/balance", guard, authControllers.updateBalance);
 
 module.exports = router;
