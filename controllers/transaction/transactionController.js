@@ -1,8 +1,6 @@
 const User = require("../../repository/users");
-
 const Transaction = require("../../repository/transaction");
-
-
+const Transactions = require("../../model/transaction");
 const { HttpCode } = require("../../lib/constants");
 
 class TransactionControllers {
@@ -33,7 +31,6 @@ class TransactionControllers {
     }
   }
 
-
   async deleteTransaction(req, res, next) {
     try {
       const { id } = req.params;
@@ -50,6 +47,8 @@ class TransactionControllers {
         .json({ code: HttpCode.OK, message: "Your transaction was delete" });
     } catch (error) {
       console.log(error.message);
+    }
+  }
 
   async transactionsByDate(req, res, next) {
     try {
@@ -69,12 +68,11 @@ class TransactionControllers {
   async transactionByPeriod(req, res, next) {
     try {
       const { period } = req.params;
-
       const periodLength = period.length;
       if (period) {
         if (periodLength <= 4) {
           const year = period;
-          const result = await Transaction.find({ owner: req.user._id, year });
+          const result = await Transactions.find({ owner: req.user._id, year });
           return res
             .status(HttpCode.OK)
             .json({ status: "success", code: HttpCode.OK, result });
@@ -84,7 +82,7 @@ class TransactionControllers {
           const newPeriod = period.split("-");
           const month = newPeriod[0];
           const year = newPeriod[1];
-          const result = await Transaction.find({
+          const result = await Transactions.find({
             owner: req.user._id,
             year,
             month,
@@ -95,7 +93,45 @@ class TransactionControllers {
         }
       }
     } catch (error) {
+      next();
+    }
+  }
 
+  async updateTransaction(req, res, next) {
+    try {
+      const { id } = req.params;
+      console.log(id);
+      const userTransaction = req.body;
+      console.log(userTransaction);
+      const result = await Transaction.updateTransaction(id, userTransaction);
+      console.log(result);
+      if (!result) {
+        return res.status(HttpCode.NOT_FOUND).json({
+          status: "error",
+          code: HttpCode.NOT_FOUND,
+          message: "Not Found",
+        });
+      }
+      const userId = req.user._id;
+      console.log(userId);
+      const userBalance = req.body.balance;
+      console.log(userBalance);
+      const resultBalance = await User.createBalance(userId, userBalance);
+      if (!resultBalance) {
+        return res.status(HttpCode.NOT_FOUND).json({
+          status: "error",
+          code: HttpCode.NOT_FOUND,
+          message: "Not Found",
+        });
+      }
+      const { balance } = resultBalance;
+      res.status(HttpCode.CREATED).json({
+        status: "Created",
+        code: HttpCode.CREATED,
+        result,
+        balance,
+      });
+    } catch (error) {
       next();
     }
   }

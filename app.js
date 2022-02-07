@@ -2,6 +2,8 @@ const express = require("express");
 const logger = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger.json");
 const { HttpCode, LIMIT_JSON } = require("./lib/constants");
 
 const { usersRoute } = require("./routes");
@@ -24,6 +26,8 @@ app.get("/", (req, res) => {
 });
 app.use("/api/users", usersRoute);
 app.use("/api/transaction", transactionRoute);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use((req, res) => {
   res
