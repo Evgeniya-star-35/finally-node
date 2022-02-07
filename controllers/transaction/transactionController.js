@@ -1,8 +1,6 @@
 const User = require("../../repository/users");
-
 const Transaction = require("../../repository/transaction");
 const Transactions = require("../../model/transaction");
-
 const { HttpCode } = require("../../lib/constants");
 
 class TransactionControllers {
@@ -51,6 +49,7 @@ class TransactionControllers {
       console.log(error.message);
     }
   }
+
   async transactionsByDate(req, res, next) {
     try {
       const { date } = req.params;
@@ -69,18 +68,12 @@ class TransactionControllers {
     try {
       const { period } = req.params;
       // const owner = req.user._id;
-
       const periodLength = period.length;
 
       if (period) {
         if (periodLength <= 5) {
           const year = period;
-
-          const result = await Transactions.find({
-            owner: req.user._id,
-            year,
-          });
-
+          const result = await Transactions.find({ owner: req.user._id, year });
           return res
             .status(HttpCode.OK)
             .json({ status: "success", code: HttpCode.OK, result });
@@ -100,6 +93,45 @@ class TransactionControllers {
             .json({ status: "success", code: HttpCode.OK, result });
         }
       }
+    } catch (error) {
+      next();
+    }
+  }
+
+  async updateTransaction(req, res, next) {
+    try {
+      const { id } = req.params;
+      console.log(id);
+      const userTransaction = req.body;
+      console.log(userTransaction);
+      const result = await Transaction.updateTransaction(id, userTransaction);
+      console.log(result);
+      if (!result) {
+        return res.status(HttpCode.NOT_FOUND).json({
+          status: "error",
+          code: HttpCode.NOT_FOUND,
+          message: "Not Found",
+        });
+      }
+      const userId = req.user._id;
+      console.log(userId);
+      const userBalance = req.body.balance;
+      console.log(userBalance);
+      const resultBalance = await User.createBalance(userId, userBalance);
+      if (!resultBalance) {
+        return res.status(HttpCode.NOT_FOUND).json({
+          status: "error",
+          code: HttpCode.NOT_FOUND,
+          message: "Not Found",
+        });
+      }
+      const { balance } = resultBalance;
+      res.status(HttpCode.CREATED).json({
+        status: "Created",
+        code: HttpCode.CREATED,
+        result,
+        balance,
+      });
     } catch (error) {
       next();
     }

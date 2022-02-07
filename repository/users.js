@@ -1,5 +1,10 @@
 const User = require("../model/user");
 
+const createBalance = async (id, balance) => {
+  const result = await User.findByIdAndUpdate(id, { balance }, { new: true });
+  return result;
+};
+
 const findById = async (id) => {
   return await User.findById(id);
 };
@@ -37,12 +42,21 @@ const update = async (id, email, password, avatar) => {
   return result;
 };
 
-const createBalance = async (id, balance) => {
-  const result = await User.findByIdAndUpdate(id, { balance }, { new: true });
+const updateGoogleUser = async (userId, body) => {
+  const result = await User.findOneAndUpdate(
+    { _id: userId },
+    {
+      avatarURL: body,
+      verify: true,
+      verifyToken: null,
+    },
+    { returnDocument: "after", runValidators: true }
+  );
   return result;
 };
 
 module.exports = {
+  createBalance,
   findById,
   findByEmail,
   findByVerifyToken,
@@ -50,5 +64,5 @@ module.exports = {
   updateToken,
   updateVerify,
   update,
-  createBalance,
+  updateGoogleUser,
 };

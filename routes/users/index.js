@@ -18,5 +18,7 @@ router.get("/verify/:token", authControllers.verifyUser);
 router.post("/verify", authControllers.repeatVerifyUser);
 router.get("/current", guard, authControllers.current);
 router.patch("/balance", guard, authControllers.updateBalance);
+router.get("/google", authControllers.googleAuth);
+router.get("/google-redirect", authControllers.googleRedirect);
 
 module.exports = router;
