@@ -40,7 +40,11 @@ const createRefreshToken = (id) => {
 };
 
 const updateToken = async (id, token, refreshToken) => {
-  return await User.updateOne({ _id: id }, { token, refreshToken });
+  return await User.updateOne(
+    { _id: id },
+    { token, refreshToken },
+    { returnDocument: "after" }
+  );
 };
 
 const updateVerify = async (id, status) => {

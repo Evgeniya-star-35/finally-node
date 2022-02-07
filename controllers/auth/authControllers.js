@@ -191,17 +191,17 @@ class AuthControllers {
         await Users.updateGoogleUser(idUser, picture);
         const token = Users.createToken(idUser);
         const refreshToken = Users.createRefreshToken(idUser);
-        const userToken = await Users.updateToken(idUser, token, refreshToken);
+        await Users.updateToken(idUser, token, refreshToken);
         return res.redirect(
-          `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
+          `${process.env.FRONTEND_URL}?token=${token}&refreshToken=${refreshToken}`
         );
       }
       const idUser = user.id;
       const token = Users.createToken(idUser);
       const refreshToken = Users.createRefreshToken(idUser);
-      const userToken = await Users.updateToken(idUser, token, refreshToken);
+      await Users.updateToken(idUser, token, refreshToken);
       return res.redirect(
-        `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
+        `${process.env.FRONTEND_URL}?token=${token}&refreshToken=${refreshToken}`
       );
     } catch (error) {
       next(error);
