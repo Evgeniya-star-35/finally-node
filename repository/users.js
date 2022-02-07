@@ -13,6 +13,10 @@ const findByEmail = async (email) => {
   return await User.findOne({ email });
 };
 
+const findByVerifyToken = async (verifyTokenEmail) => {
+  return await User.findOne({ verifyTokenEmail });
+};
+
 const create = async (body) => {
   const user = new User(body);
   return await user.save();
@@ -20,6 +24,13 @@ const create = async (body) => {
 
 const updateToken = async (id, token, refreshToken) => {
   return await User.updateOne({ _id: id }, { token, refreshToken });
+};
+
+const updateVerify = async (id, status) => {
+  return await User.updateOne(
+    { _id: id },
+    { isVerify: status, verifyTokenEmail: null }
+  );
 };
 
 const update = async (id, email, password, avatar) => {
@@ -48,8 +59,10 @@ module.exports = {
   createBalance,
   findById,
   findByEmail,
+  findByVerifyToken,
   create,
   updateToken,
+  updateVerify,
   update,
   updateGoogleUser,
 };
