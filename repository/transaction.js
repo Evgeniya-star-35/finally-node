@@ -16,9 +16,18 @@ const getTransactionByDate = async (owner, date) => {
   return await Transaction.find({ owner, date });
 };
 
+const updateTransaction = async (id, transaction) => {
+  return await Transaction.findByIdAndUpdate(
+    id,
+    { transaction },
+    { new: true }
+  );
+};
+
 module.exports = {
   createTransaction,
   getTransactionByPeriod,
   getTransactionByDate,
   deleteTransaction,
+  updateTransaction,
 };

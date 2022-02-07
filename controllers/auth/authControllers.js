@@ -1,8 +1,10 @@
 const { HttpCode } = require("../../lib/constants");
 const authService = require("../../service/auth");
 const Users = require("../../repository/users");
+const queryString = require("query-string");
+const axios = require("axios");
 const EmailService = require("../../service/email/service");
-const { CreateSenderSendGrid } = require("../../service/email/sender");
+const { CreateSenderSendGrid } = require("../../service/email/sender"
 
 class AuthControllers {
   async registration(req, res, next) {
@@ -132,6 +134,77 @@ class AuthControllers {
     }
   }
 
+
+  async googleAuth(_req, res, next) {
+    try {
+      const stringifiedParams = queryString.stringify({
+        client_id: process.env.GOOGLE_CLIENT_ID,
+        redirect_uri: `${process.env.BASE_URL}/api/users/google-redirect`,
+        scope: [
+          "https://www.googleapis.com/auth/userinfo.email",
+          "https://www.googleapis.com/auth/userinfo.profile",
+        ].join(" "),
+        response_type: "code",
+        access_type: "offline",
+        prompt: "consent",
+      });
+      return res.redirect(
+        `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
+      );
+      
+async googleRedirect(req, res, next) {
+    try {
+      const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
+      const urlObj = new URL(fullUrl);
+      const urlParams = queryString.parse(urlObj.search);
+      const code = urlParams.code;
+
+      const tokenData = await axios({
+        url: `https://oauth2.googleapis.com/token`,
+        method: "post",
+        data: {
+          client_id: process.env.GOOGLE_CLIENT_ID,
+          client_secret: process.env.GOOGLE_CLIENT_SECRET,
+          redirect_uri: `${process.env.BASE_URL}/api/users/google-redirect`,
+          grant_type: "authorization_code",
+          code,
+        },
+      });
+
+      const userData = await axios({
+        url: "https://www.googleapis.com/oauth2/v2/userinfo",
+        method: "get",
+        headers: {
+          Authorization: `Bearer ${tokenData.data.access_token}`,
+        },
+      });
+
+      // const { email, name, picture, id } = userData.data;
+
+      // const user = await Users.findByEmail(email);
+
+      // if (!user) {
+      //   const newUser = await Users.create({ email, name, password: id });
+      //   const idUser = newUser.id;
+      //   await Users.updateGoogleUser(idUser, picture);
+      //   const token = createToken(idUser);
+      //   const refreshToken = createRefreshToken(idUser);
+      //   const userToken = await Users.updateToken(idUser, token, refreshToken);
+      //   return res.redirect(
+      //     `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
+      //   );
+      // }
+      // const idUser = user.id;
+      // const token = createToken(idUser);
+      // const refreshToken = createRefreshToken(idUser);
+      // const userToken = await Users.updateToken(idUser, token, refreshToken);
+      // return res.redirect(
+      //   `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
+      // );
+      return res.redirect(
+        `${process.env.FRONTEND_URL}?email=${userData.data.email}`
+      );
+      
   async verifyUser(req, res, next) {
     try {
       const userFromToken = await Users.findByVerifyToken(req.params.token);
@@ -148,12 +221,13 @@ class AuthControllers {
         code: HttpCode.BAD_REQUEST,
         data: { message: "Invalid token" },
       });
+
     } catch (error) {
       next(error);
     }
   }
 
-  async repeatVerifyUser(req, res, next) {
+async repeatVerifyUser(req, res, next) {
     try {
       const user = await Users.findByEmail(req.body.email);
       if (user) {
@@ -187,6 +261,7 @@ class AuthControllers {
         code: HttpCode.NOT_FOUND,
         message: "User with email not found",
       });
+
     } catch (error) {
       next(error);
     }
