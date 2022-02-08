@@ -1,6 +1,5 @@
 const User = require("../../repository/users");
 const Transaction = require("../../repository/transaction");
-// const Transactions = require("../../model/transaction");
 const { HttpCode } = require("../../lib/constants");
 
 class TransactionControllers {
