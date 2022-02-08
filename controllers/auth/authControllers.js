@@ -1,8 +1,8 @@
+const axios = require("axios");
+const queryString = require("query-string");
 const { HttpCode } = require("../../lib/constants");
 const authService = require("../../service/auth");
 const Users = require("../../repository/users");
-const queryString = require("query-string");
-const axios = require("axios");
 const EmailService = require("../../service/email/service");
 const { CreateSenderSendGrid } = require("../../service/email/sender");
 
@@ -137,7 +137,7 @@ class AuthControllers {
     try {
       const stringifiedParams = queryString.stringify({
         client_id: process.env.GOOGLE_CLIENT_ID,
-        redirect_uri: `${process.env.BASE_URL}/api/users/google-redirect`,
+        redirect_uri: `${process.env.BACK_BASE}/api/users/google-redirect`,
         scope: [
           "https://www.googleapis.com/auth/userinfo.email",
           "https://www.googleapis.com/auth/userinfo.profile",
@@ -167,7 +167,7 @@ class AuthControllers {
         data: {
           client_id: process.env.GOOGLE_CLIENT_ID,
           client_secret: process.env.GOOGLE_CLIENT_SECRET,
-          redirect_uri: `${process.env.BASE_URL}/api/users/google-redirect`,
+          redirect_uri: `${process.env.BACK_BASE}/api/users/google-redirect`,
           grant_type: "authorization_code",
           code,
         },
