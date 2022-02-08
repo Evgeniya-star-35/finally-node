@@ -160,7 +160,6 @@ class AuthControllers {
       const urlObj = new URL(fullUrl);
       const urlParams = queryString.parse(urlObj.search);
       const code = urlParams.code;
-
       const tokenData = await axios({
         url: `https://oauth2.googleapis.com/token`,
         method: "post",
@@ -184,24 +183,23 @@ class AuthControllers {
       const { email, name, picture, id } = userData.data;
 
       const user = await Users.findByEmail(email);
-
       if (!user) {
         const newUser = await Users.create({ email, name, password: id });
         const idUser = newUser.id;
         await Users.updateGoogleUser(idUser, picture);
         const token = Users.createToken(idUser);
         const refreshToken = Users.createRefreshToken(idUser);
-        await Users.updateToken(idUser, token, refreshToken);
+        const userToken = await Users.updateToken(idUser, token, refreshToken);
         return res.redirect(
-          `${process.env.FRONTEND_URL}?token=${token}&refreshToken=${refreshToken}`
+          `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
         );
       }
       const idUser = user.id;
       const token = Users.createToken(idUser);
       const refreshToken = Users.createRefreshToken(idUser);
-      await Users.updateToken(idUser, token, refreshToken);
+      const userToken = await Users.updateToken(idUser, token, refreshToken);
       return res.redirect(
-        `${process.env.FRONTEND_URL}?token=${token}&refreshToken=${refreshToken}`
+        `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
       );
     } catch (error) {
       next(error);
