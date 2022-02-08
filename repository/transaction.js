@@ -16,6 +16,10 @@ const getTransactionByDate = async (owner, date) => {
   return await Transaction.find({ owner, date });
 };
 
+// const getTransactionByMonth = async (owner, month) => {
+//   return await Transaction.find({ owner, month });
+// };
+
 const updateTransaction = async (id, transaction) => {
   return await Transaction.findByIdAndUpdate(
     id,
@@ -28,6 +32,7 @@ module.exports = {
   createTransaction,
   getTransactionByPeriod,
   getTransactionByDate,
+  // getTransactionByMonth,
   deleteTransaction,
   updateTransaction,
 };
