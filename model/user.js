@@ -9,9 +9,9 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required"],
-      min: 3,
-      max: 40,
+      // required: [true, "Name is required"],
+      // min: 3,
+      // max: 40,
     },
     email: {
       type: String,
@@ -24,7 +24,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
+      // required: [true, "Password is required"],
     },
     token: {
       type: String,
