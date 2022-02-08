@@ -1,21 +1,52 @@
-import Joi from "joi";
-import { HttpCode } from "../../lib/constants";
+const Joi = require("joi");
+const { HttpCode } = require("../../lib/constants");
+const pkg = require("mongoose");
+const { Types } = pkg;
 
-const schemaUserLogin = Joi.object({
-  password: Joi.string()
-    .pattern(/[0-9A-Za-zА-Яа-яЁёЄєЇї!@#$%^&*]{6,}/)
+const createUserSchema = Joi.object({
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+    })
     .required(),
-  email: Joi.string().email({ minDomainSegments: 2, tlds: false }).required(),
-  subscription: Joi.string().optional(),
+  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
 });
 
-export const validationUserLogin = (req, res, next) => {
-  if ("password" in req.body && "email" in req.body) {
-    return validate(schemaUserLogin, req.body, next);
+const validateCreateUser = async (req, res, next) => {
+  try {
+    await createUserSchema.validateAsync(req.body);
+  } catch (err) {
+    return res.status(HttpCode.BAD_REQUEST).json({
+      status: "error",
+      code: HttpCode.BAD_REQUEST,
+      message: "You forget something",
+    });
   }
-  return res.status(HttpCode.BAD_REQUEST).json({
-    status: "error",
-    code: HttpCode.BAD_REQUEST,
-    message: "Missing required name field",
-  });
+  next();
+};
+
+// const validationUserLogin = (req, res, next) => {
+//   if ("password" in req.body && "email" in req.body) {
+//     return validate(schemaUserLogin, req.body, next);
+//   }
+//   return res.status(HttpCode.BAD_REQUEST).json({
+//     status: "error",
+//     code: HttpCode.BAD_REQUEST,
+//     message: "Missing required name field",
+//   });
+// };
+
+const validationUserId = async (req, res, next) => {
+  if (!Types.ObjectId.isValid(req.user.id)) {
+    return res.status(HttpCode.BAD_REQUEST).json({
+      status: "error",
+      code: HttpCode.BAD_REQUEST,
+      message: "Invalid token",
+    });
+  }
+  next();
+};
+module.exports = {
+  validateCreateUser,
+  validationUserId,
 };

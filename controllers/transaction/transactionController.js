@@ -64,21 +64,6 @@ class TransactionControllers {
     }
   }
 
-  // async transactionsByMonth(req, res, next) {
-  //   try {
-  //     const { month } = req.params;
-  //     const { owner } = req.user._id;
-
-  //     const result = await Transaction.getTransactionByMonth(owner, month);
-
-  //     return res
-  //       .status(HttpCode.OK)
-  //       .json({ status: "success", code: HttpCode.OK, result });
-  //   } catch (error) {
-  //     next();
-  //   }
-  // }
-
   async transactionByPeriod(req, res, next) {
     try {
       const { period } = req.params;
@@ -88,6 +73,7 @@ class TransactionControllers {
       if (period) {
         if (periodLength <= 5) {
           const year = period;
+
           const result = await Transaction.getTransactionByPeriod(owner, year);
           return res
             .status(HttpCode.OK)
@@ -98,10 +84,10 @@ class TransactionControllers {
           const newPeriod = period.split("-");
           const month = newPeriod[0];
           const year = newPeriod[1];
-          const result = await TTransaction.getTransactionByPeriod(
+          const result = await Transaction.getTransactionByPeriod(
             owner,
-            year,
-            month
+            month,
+            year
           );
           console.log(result);
           return res
