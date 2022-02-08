@@ -9,6 +9,9 @@ const userSchema = new Schema(
   {
     name: {
       type: String,
+      required: [true, "Name is required"],
+      min: 3,
+      max: 40,
     },
     email: {
       type: String,
