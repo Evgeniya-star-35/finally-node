@@ -8,17 +8,13 @@ const deleteTransaction = async (id) => {
   return await Transaction.findByIdAndRemove({ _id: id });
 };
 
-const getTransactionByPeriod = async (owner, period) => {
-  return await Transaction.find({ owner, period });
+const getTransactionByPeriod = async (owner, year) => {
+  return await Transaction.find({ owner, year });
 };
 
 const getTransactionByDate = async (owner, date) => {
   return await Transaction.find({ owner, date });
 };
-
-// const getTransactionByMonth = async (owner, month) => {
-//   return await Transaction.find({ owner, month });
-// };
 
 const updateTransaction = async (id, transaction) => {
   return await Transaction.findByIdAndUpdate(
