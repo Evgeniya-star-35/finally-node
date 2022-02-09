@@ -89,7 +89,6 @@ class TransactionControllers {
             month,
             year
           );
-          console.log(result);
           return res
             .status(HttpCode.OK)
             .json({ status: "success", code: HttpCode.OK, result });
@@ -103,11 +102,8 @@ class TransactionControllers {
   async updateTransaction(req, res, next) {
     try {
       const { id } = req.params;
-      console.log(id);
       const userTransaction = req.body;
-      console.log(userTransaction);
       const result = await Transaction.updateTransaction(id, userTransaction);
-      console.log(result);
       if (!result) {
         return res.status(HttpCode.NOT_FOUND).json({
           status: "error",
@@ -116,9 +112,7 @@ class TransactionControllers {
         });
       }
       const userId = req.user._id;
-      console.log(userId);
       const userBalance = req.body.balance;
-      console.log(userBalance);
       const resultBalance = await User.createBalance(userId, userBalance);
       if (!resultBalance) {
         return res.status(HttpCode.NOT_FOUND).json({

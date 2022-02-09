@@ -3,8 +3,8 @@ const queryString = require("query-string");
 const { HttpCode } = require("../../lib/constants");
 const authService = require("../../service/auth");
 const Users = require("../../repository/users");
-const EmailService = require("../../service/email/service");
-const { CreateSenderSendGrid } = require("../../service/email/sender");
+// const EmailService = require("../../service/email/service");
+// const { CreateSenderSendGrid } = require("../../service/email/sender");
 
 class AuthControllers {
   async registration(req, res, next) {
@@ -19,22 +19,23 @@ class AuthControllers {
         });
       }
       const userData = await authService.create(req.body);
-      const emailService = new EmailService(
-        process.env.NODE_ENV,
-        new CreateSenderSendGrid()
-      );
+      // const emailService = new EmailService(
+      //   process.env.NODE_ENV,
+      //   new CreateSenderSendGrid()
+      // );
 
-      const isSend = await emailService.sendVerifyEmail(
-        email,
-        userData.name,
-        userData.verifyTokenEmail
-      );
+      // const isSend = await emailService.sendVerifyEmail(
+      //   email,
+      //   userData.name,
+      //   userData.verifyTokenEmail
+      // );
 
-      delete userData.verifyTokenEmail;
+      // delete userData.verifyTokenEmail;
       return res.status(HttpCode.CREATED).json({
         status: "success",
         code: HttpCode.CREATED,
-        data: { ...userData, isSendEmailVerify: isSend },
+        // data: { ...userData, isSendEmailVerify: isSend },
+        data: { ...userData },
       });
     } catch (error) {
       next(error);
@@ -206,65 +207,65 @@ class AuthControllers {
     }
   }
 
-  async verifyUser(req, res, next) {
-    try {
-      const userFromToken = await Users.findByVerifyToken(req.params.token);
-      if (userFromToken) {
-        await Users.updateVerify(userFromToken.id, true);
-        return res.status(HttpCode.OK).json({
-          status: "ОК",
-          code: HttpCode.OK,
-          data: { message: "Success" },
-        });
-      }
-      return res.status(HttpCode.BAD_REQUEST).json({
-        status: "success",
-        code: HttpCode.BAD_REQUEST,
-        data: { message: "Invalid token" },
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
+  // async verifyUser(req, res, next) {
+  //   try {
+  //     const userFromToken = await Users.findByVerifyToken(req.params.token);
+  //     if (userFromToken) {
+  //       await Users.updateVerify(userFromToken.id, true);
+  //       return res.status(HttpCode.OK).json({
+  //         status: "ОК",
+  //         code: HttpCode.OK,
+  //         data: { message: "Success" },
+  //       });
+  //     }
+  //     return res.status(HttpCode.BAD_REQUEST).json({
+  //       status: "success",
+  //       code: HttpCode.BAD_REQUEST,
+  //       data: { message: "Invalid token" },
+  //     });
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 
-  async repeatVerifyUser(req, res, next) {
-    try {
-      const user = await Users.findByEmail(req.body.email);
-      if (user) {
-        const { email, name, isVerify, verifyTokenEmail } = user;
-        if (!isVerify) {
-          const emailService = new EmailService(
-            process.env.NODE_ENV,
-            new CreateSenderSendGrid()
-          );
-          const isSend = await emailService.sendVerifyEmail(
-            email,
-            name,
-            verifyTokenEmail
-          );
-          if (isSend) {
-            return res.status(HttpCode.OK).json({
-              status: "success",
-              code: HttpCode.OK,
-              data: { message: "Verification email sent" },
-            });
-          }
-        }
-        return res.status(HttpCode.UE).json({
-          status: "error",
-          code: HttpCode.UE,
-          message: "Unprocessable Entity",
-        });
-      }
-      return res.status(HttpCode.NOT_FOUND).json({
-        status: "error",
-        code: HttpCode.NOT_FOUND,
-        message: "User with email not found",
-      });
-    } catch (error) {
-      next(error);
-    }
-  }
+  // async repeatVerifyUser(req, res, next) {
+  //   try {
+  //     const user = await Users.findByEmail(req.body.email);
+  //     if (user) {
+  //       const { email, name, isVerify, verifyTokenEmail } = user;
+  //       if (!isVerify) {
+  //         const emailService = new EmailService(
+  //           process.env.NODE_ENV,
+  //           new CreateSenderSendGrid()
+  //         );
+  //         const isSend = await emailService.sendVerifyEmail(
+  //           email,
+  //           name,
+  //           verifyTokenEmail
+  //         );
+  //         if (isSend) {
+  //           return res.status(HttpCode.OK).json({
+  //             status: "success",
+  //             code: HttpCode.OK,
+  //             data: { message: "Verification email sent" },
+  //           });
+  //         }
+  //       }
+  //       return res.status(HttpCode.UE).json({
+  //         status: "error",
+  //         code: HttpCode.UE,
+  //         message: "Unprocessable Entity",
+  //       });
+  //     }
+  //     return res.status(HttpCode.NOT_FOUND).json({
+  //       status: "error",
+  //       code: HttpCode.NOT_FOUND,
+  //       message: "User with email not found",
+  //     });
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // }
 }
 
 module.exports = AuthControllers;
