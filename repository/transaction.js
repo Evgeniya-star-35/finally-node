@@ -28,7 +28,6 @@ module.exports = {
   createTransaction,
   getTransactionByPeriod,
   getTransactionByDate,
-  // getTransactionByMonth,
   deleteTransaction,
   updateTransaction,
 };
