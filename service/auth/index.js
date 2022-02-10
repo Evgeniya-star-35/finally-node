@@ -3,7 +3,9 @@ const repositoryUsers = require("../../repository/users");
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 const User = require("../../model/user");
 
+
 const TOKEN_SECRET_KEY = process.env.JWT_SECRET_KEY;
+
 
 class AuthService {
   async userExist(email) {
