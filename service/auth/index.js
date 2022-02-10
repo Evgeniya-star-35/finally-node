@@ -3,10 +3,33 @@ const repositoryUsers = require("../../repository/users");
 const SECRET_KEY = process.env.JWT_SECRET_KEY;
 const User = require("../../model/user");
 
+
+const TOKEN_SECRET_KEY = process.env.JWT_SECRET_KEY;
+
+
 class AuthService {
   async userExist(email) {
     const user = await repositoryUsers.findByEmail(email);
     return !!user;
+  }
+
+  async isExistUser(email) {
+    const existUser = await User.findOne({ email });
+    return existUser;
+  }
+
+  async createUser(body) {
+    const newUser = await User.create(body);
+    const { id, email } = newUser;
+
+    const token = jwt.sign({ id: newUser.id }, TOKEN_SECRET_KEY, {
+      expiresIn: "1h",
+    });
+
+    newUser.token = token;
+    await newUser.save();
+
+    return { id, email, token };
   }
 
   async create(body) {
