@@ -11,8 +11,7 @@ const findById = async (id) => {
 };
 
 const findByEmail = async (email) => {
-  const existUser = await User.findOne({ email });
-  return existUser;
+  return await User.findOne({ email });
 };
 
 const findByVerifyToken = async (verifyTokenEmail) => {
