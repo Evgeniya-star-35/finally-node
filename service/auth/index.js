@@ -9,21 +9,10 @@ class AuthService {
     return !!user;
   }
 
-  // async create(body) {
-  //   const { id, name, email, avatar, verifyTokenEmail } =
-  //     await repositoryUsers.create(body);
-  //   return { id, name, email, avatar, verifyTokenEmail };
-  // }
-
   async create(body) {
-    const newUser = await User.create(body);
-    const { id, email } = newUser;
-    const token = jwt.sign({ id: newUser.id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "1h",
-    });
-    newUser.token = token;
-    await newUser.save();
-    return { id, email, token };
+    const { id, name, email, avatar, verifyTokenEmail } =
+      await repositoryUsers.create(body);
+    return { id, name, email, avatar, verifyTokenEmail };
   }
 
   async getUser(email, password) {
