@@ -86,7 +86,7 @@ class AuthControllers {
   }
 
   async current(req, res) {
-    const { email, subscription } = req.user;
+    const { email } = req.user;
     const userToken = await req.user.token;
     const userRefreshToken = await req.user.refreshToken;
 
@@ -105,7 +105,6 @@ class AuthControllers {
       data: {
         user: {
           email,
-          subscription,
         },
       },
     });
