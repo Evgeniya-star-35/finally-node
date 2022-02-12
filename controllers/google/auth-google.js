@@ -83,7 +83,7 @@ const googleRedirect = async (req, res, next) => {
     const refreshToken = Users.createRefreshToken(idUser);
     await Users.updateToken(idUser, token, refreshToken);
     return res.redirect(
-      `${process.env.FRONTEND_URL}/googleAuth/?token=${token}&refreshToken=${refreshToken}&idUser=${idUser}&emailUser=${email}`
+      `${process.env.FRONTEND_URL}?token=${token}&refreshToken=${refreshToken}&idUser=${idUser}&emailUser=${email}`
     );
   } catch (error) {
     next(error);
