@@ -58,12 +58,12 @@ class AuthControllers {
 
       await authService.setToken(user.id, token, refreshToken);
 
-      const { name, avatar } = user;
+      const { name, avatar, balance } = user;
 
       res.status(HttpCode.OK).json({
         status: "OK",
         code: HttpCode.OK,
-        data: { token, refreshToken, user: { name, email, avatar } },
+        data: { token, refreshToken, user: { name, email, avatar, balance } },
       });
     } catch (error) {
       next(error);
@@ -86,10 +86,9 @@ class AuthControllers {
   }
 
   async current(req, res) {
-    const { email } = req.user;
+    const { email, balance } = req.user;
     const userToken = await req.user.token;
     const userRefreshToken = await req.user.refreshToken;
-
     const userId = await req.user.id;
     if (!userToken || !userRefreshToken || !userId) {
       return res.status(HttpCode.UNAUTHORIZED).json({
@@ -105,6 +104,7 @@ class AuthControllers {
       data: {
         user: {
           email,
+          balance,
         },
       },
     });
