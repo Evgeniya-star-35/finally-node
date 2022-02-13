@@ -6,6 +6,10 @@ const createBalance = async (id, balance) => {
   return result;
 };
 
+const updateAvatar = async (id, avatar, idAvatarCloud = null) => {
+  return await User.updateOne({ _id: id }, { avatar, idAvatarCloud });
+};
+
 const findById = async (id) => {
   return await User.findById(id);
 };
@@ -88,4 +92,5 @@ module.exports = {
   updateGoogleUser,
   createToken,
   createRefreshToken,
+  updateAvatar,
 };
