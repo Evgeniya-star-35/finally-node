@@ -101,11 +101,9 @@ class AuthControllers {
   }
 
   async current(req, res) {
-    const { email, avatar } = req.user;
-    console.log(avatar);
+    const { email, balance, avatar } = req.user;
     const userToken = await req.user.token;
     const userRefreshToken = await req.user.refreshToken;
-
     const userId = await req.user.id;
     if (!userToken || !userRefreshToken || !userId) {
       return res.status(HttpCode.UNAUTHORIZED).json({
@@ -122,6 +120,8 @@ class AuthControllers {
         user: {
           email,
           avatar,
+          balance,
+
         },
       },
     });
