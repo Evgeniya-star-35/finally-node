@@ -8,6 +8,7 @@ const {
 const { limiter } = require("../../middlewares");
 const { guard } = require("../../middlewares");
 const { validateCreateUser, validationUserId } = require("./validation");
+const { upload } = require("../../middlewares");
 
 const authControllers = new AuthControllers();
 router.post(
@@ -16,14 +17,19 @@ router.post(
   validateCreateUser,
   authControllers.registration
 );
+router.patch(
+  "/avatar",
+  guard,
+  upload.single("avatar"),
+  authControllers.uploadAvatar
+);
 router.post("/login", authControllers.login);
-
 router.post("/logout", guard, validationUserId, authControllers.logout);
 
 // router.get("/verify/:token", authControllers.verifyUser);
 // router.post("/verify", authControllers.repeatVerifyUser);
 
-router.get("/current", guard, authControllers.current);
+router.get("/current", guard, upload.single("avatar"), authControllers.current);
 router.patch("/balance", guard, authControllers.updateBalance);
 router.get("/google", googleAuth);
 router.get("/google-redirect", googleRedirect);

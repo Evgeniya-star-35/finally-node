@@ -3,6 +3,11 @@
 const { HttpCode } = require("../../lib/constants");
 const authService = require("../../service/auth");
 const Users = require("../../repository/users");
+const {
+  AvatarStorage,
+  CloudStorage,
+  // LocalStorage,
+} = require("../../service/storageAvatar");
 // const EmailService = require("../../service/email/service");
 // const { CreateSenderSendGrid } = require("../../service/email/sender");
 
@@ -58,12 +63,12 @@ class AuthControllers {
 
       await authService.setToken(user.id, token, refreshToken);
 
-      const { name, avatar } = user;
+      const { name, avatar, balance } = user;
 
       res.status(HttpCode.OK).json({
         status: "OK",
         code: HttpCode.OK,
-        data: { token, refreshToken, user: { name, email, avatar } },
+        data: { token, refreshToken, user: { name, email, avatar, balance } },
       });
     } catch (error) {
       next(error);
@@ -85,8 +90,19 @@ class AuthControllers {
     }
   }
 
+  async uploadAvatar(req, res, next) {
+    const avatarStorage = new AvatarStorage(CloudStorage, req.file, req.user);
+
+    const avatarUrl = await avatarStorage.updateAvatar();
+
+    res
+      .status(HttpCode.OK)
+      .json({ status: "success", code: HttpCode.OK, data: { avatarUrl } });
+  }
+
   async current(req, res) {
-    const { email } = req.user;
+    const { email, avatar } = req.user;
+    console.log(avatar);
     const userToken = await req.user.token;
     const userRefreshToken = await req.user.refreshToken;
 
@@ -105,6 +121,7 @@ class AuthControllers {
       data: {
         user: {
           email,
+          avatar,
         },
       },
     });
@@ -132,79 +149,6 @@ class AuthControllers {
       next(error);
     }
   }
-
-  // async googleAuth(_req, res, next) {
-  //   try {
-  //     const stringifiedParams = queryString.stringify({
-  //       client_id: process.env.GOOGLE_CLIENT_ID,
-  //       redirect_uri: `${process.env.BACK_BASE}/api/users/google-redirect`,
-  //       scope: [
-  //         "https://www.googleapis.com/auth/userinfo.email",
-  //         "https://www.googleapis.com/auth/userinfo.profile",
-  //       ].join(" "),
-  //       response_type: "code",
-  //       access_type: "offline",
-  //       prompt: "consent",
-  //     });
-  //     return res.redirect(
-  //       `https://accounts.google.com/o/oauth2/v2/auth?${stringifiedParams}`
-  //     );
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
-
-  // async googleRedirect(req, res, next) {
-  //   try {
-  //     const fullUrl = `${req.protocol}://${req.get("host")}${req.originalUrl}`;
-  //     const urlObj = new URL(fullUrl);
-  //     const urlParams = queryString.parse(urlObj.search);
-  //     const code = urlParams.code;
-  //     const tokenData = await axios({
-  //       url: `https://oauth2.googleapis.com/token`,
-  //       method: "post",
-  //       data: {
-  //         client_id: process.env.GOOGLE_CLIENT_ID,
-  //         client_secret: process.env.GOOGLE_CLIENT_SECRET,
-  //         redirect_uri: `${process.env.BACK_BASE}/api/users/google-redirect`,
-  //         grant_type: "authorization_code",
-  //         code,
-  //       },
-  //     });
-
-  //     const userData = await axios({
-  //       url: "https://www.googleapis.com/oauth2/v2/userinfo",
-  //       method: "get",
-  //       headers: {
-  //         Authorization: `Bearer ${tokenData.data.access_token}`,
-  //       },
-  //     });
-
-  //     const { email, name, picture, id } = userData.data;
-
-  //     const user = await Users.findByEmail(email);
-  //     if (!user) {
-  //       const newUser = await Users.create({ email, name, password: id });
-  //       const idUser = newUser.id;
-  //       await Users.updateGoogleUser(idUser, picture);
-  //       const token = Users.createToken(idUser);
-  //       const refreshToken = Users.createRefreshToken(idUser);
-  //       const userToken = await Users.updateToken(idUser, token, refreshToken);
-  //       return res.redirect(
-  //         `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
-  //       );
-  //     }
-  //     const idUser = user.id;
-  //     const token = Users.createToken(idUser);
-  //     const refreshToken = Users.createRefreshToken(idUser);
-  //     const userToken = await Users.updateToken(idUser, token, refreshToken);
-  //     return res.redirect(
-  //       `${process.env.FRONTEND_URL}?token=${userToken.token}&refreshToken=${refreshToken}`
-  //     );
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // }
 
   // async verifyUser(req, res, next) {
   //   try {
