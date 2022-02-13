@@ -26,8 +26,8 @@ router.patch(
 router.post("/login", authControllers.login);
 router.post("/logout", guard, validationUserId, authControllers.logout);
 
-// router.get("/verify/:token", authControllers.verifyUser);
-// router.post("/verify", authControllers.repeatVerifyUser);
+router.get("/verify/:token", authControllers.verifyUser);
+router.post("/verify", authControllers.repeatVerifyUser);
 
 router.get("/current", guard, upload.single("avatar"), authControllers.current);
 router.patch("/balance", guard, authControllers.updateBalance);
