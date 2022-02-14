@@ -16,6 +16,20 @@ switch (process.env.NODE_ENV) {
     break;
 }
 
+let FRONTEND;
+
+switch (process.env.NODE_ENV) {
+  case "development":
+    FRONTEND = process.env.BASE_URL;
+    break;
+  case "production":
+    FRONTEND = process.env.FRONTEND_URL;
+    break;
+  default:
+    FRONTEND = process.env.BASE_URL;
+    break;
+}
+
 const googleAuth = async (_req, res, next) => {
   try {
     const stringifiedParams = queryString.stringify({
@@ -74,7 +88,7 @@ const googleRedirect = async (req, res, next) => {
       const refreshToken = Users.createRefreshToken(idUser);
       await Users.updateToken(idUser, token, refreshToken);
       return res.redirect(
-        `${process.env.FRONTEND_URL}?token=${token}&refreshToken=${refreshToken}`
+        `${FRONTEND}?token=${token}&refreshToken=${refreshToken}`
       );
     }
 
@@ -83,7 +97,7 @@ const googleRedirect = async (req, res, next) => {
     const refreshToken = Users.createRefreshToken(idUser);
     await Users.updateToken(idUser, token, refreshToken);
     return res.redirect(
-      `${process.env.FRONTEND_URL}?token=${token}&refreshToken=${refreshToken}&idUser=${idUser}&emailUser=${email}`
+      `${FRONTEND}?token=${token}&refreshToken=${refreshToken}&idUser=${idUser}&emailUser=${email}`
     );
   } catch (error) {
     next(error);

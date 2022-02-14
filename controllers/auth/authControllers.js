@@ -148,6 +148,23 @@ class AuthControllers {
     }
   }
 
+  async aggregationBalance(req, res, next) {
+    const { id } = req.params;
+    console.log(id);
+    const data = await Users.getStatisticsBalance(id);
+    console.log(data);
+    if (data) {
+      return res
+        .status(HttpCode.OK)
+        .json({ status: "success", code: HttpCode.OK, data });
+    }
+    res.status(HttpCode.NOT_FOUND).json({
+      status: "error",
+      code: HttpCode.NOT_FOUND,
+      message: "Not found",
+    });
+  }
+
   async verifyUser(req, res, next) {
     try {
       const userFromToken = await Users.findByVerifyToken(req.params.token);
