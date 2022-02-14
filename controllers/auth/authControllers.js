@@ -3,6 +3,8 @@
 const { HttpCode } = require("../../lib/constants");
 const authService = require("../../service/auth");
 const Users = require("../../repository/users");
+const Transaction = require("../../model/transaction");
+const User = require("../../model/user");
 const {
   AvatarStorage,
   CloudStorage,
@@ -148,11 +150,41 @@ class AuthControllers {
     }
   }
 
+  async currentBalance(req, res, next) {
+    const { _id } = req.user;
+    const balance = req.user.balance;
+
+    const transaction = await Transaction.findOne({ owner: _id }).sort({
+      $natural: -1,
+    });
+
+    const { sum, type } = transaction;
+    const updateBalance = type === "cost" ? balance - sum : balance + sum;
+
+    if (updateBalance < 0) {
+      return res.status(HttpCode.BAD_REQUEST).json({
+        status: "error",
+        code: HttpCode.BAD_REQUEST,
+        message: "There is no money for this purchase",
+      });
+    }
+
+    await User.findByIdAndUpdate(
+      { _id },
+      { balance: updateBalance },
+      { new: true }
+    );
+
+    res.status(HttpCode.OK).json({
+      status: "success",
+      code: HttpCode.OK,
+      updateBalance,
+    });
+  }
+
   async aggregationBalance(req, res, next) {
     const { id } = req.params;
-    console.log(id);
     const data = await Users.getStatisticsBalance(id);
-    console.log(data);
     if (data) {
       return res
         .status(HttpCode.OK)
