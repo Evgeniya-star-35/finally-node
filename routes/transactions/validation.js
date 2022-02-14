@@ -8,7 +8,7 @@ const createTransactionSchema = Joi.object({
   date: Joi.string().required(),
   category: Joi.string().required(),
   subCategory: Joi.string().required(),
-  sum: Joi.string().required(),
+  sum: Joi.number().required(),
   day: Joi.string().optional(),
   month: Joi.string().optional(),
   year: Joi.string().optional(),
