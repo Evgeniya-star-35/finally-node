@@ -31,6 +31,7 @@ router.post("/verify", authControllers.repeatVerifyUser);
 
 router.get("/current", guard, upload.single("avatar"), authControllers.current);
 router.patch("/balance", guard, authControllers.updateBalance);
+router.get("/stats/:id", guard, authControllers.aggregationBalance);
 router.get("/google", googleAuth);
 router.get("/google-redirect", googleRedirect);
 

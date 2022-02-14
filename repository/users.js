@@ -1,5 +1,9 @@
 const jwt = require("jsonwebtoken");
 const User = require("../model/user");
+const Transaction = require("../model/transaction");
+const mongoose = require("mongoose");
+
+const { Types } = mongoose;
 
 const createBalance = async (id, balance) => {
   const result = await User.findByIdAndUpdate(id, { balance }, { new: true });
@@ -80,6 +84,19 @@ const updateGoogleUser = async (userId, body) => {
   return result;
 };
 
+const getStatisticsBalance = async (id) => {
+  const data = await Transaction.aggregate([
+    { $match: { owner: Types.ObjectId(id) } },
+    {
+      $group: {
+        _id: "stats",
+        totalSum: { $sum: "$sum" },
+      },
+    },
+  ]);
+  return data;
+};
+
 module.exports = {
   createBalance,
   findById,
@@ -93,4 +110,5 @@ module.exports = {
   createToken,
   createRefreshToken,
   updateAvatar,
+  getStatisticsBalance,
 };

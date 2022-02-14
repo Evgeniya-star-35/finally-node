@@ -3,15 +3,12 @@ const gravatar = require("gravatar");
 const { randomUUID } = require("crypto");
 const bcrypt = require("bcryptjs");
 
-const { Schema, model } = mongoose;
+const { Schema, SchemaTypes, model } = mongoose;
 
 const userSchema = new Schema(
   {
     name: {
       type: String,
-      // required: [true, "Name is required"],
-      // min: 3,
-      // max: 40,
     },
     email: {
       type: String,
