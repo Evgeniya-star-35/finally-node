@@ -40,6 +40,7 @@ class EmailService {
           button: {
             color: "#FF751D",
             text: "Confirm your account",
+
             link: `${this.link}/api/users/verify/${verifyToken}`,
           },
           copyright: "Copyright © 2022 HardCore. All rights reserved",

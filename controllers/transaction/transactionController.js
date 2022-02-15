@@ -1,17 +1,35 @@
 const User = require("../../repository/users");
-const Transaction = require("../../repository/transaction");
+const Transactions = require("../../repository/transaction");
 const { HttpCode } = require("../../lib/constants");
+const Transaction = require("../../model/transaction");
 
 class TransactionControllers {
   async createTransaction(req, res, next) {
     try {
-      const newTransaction = await Transaction.createTransaction({
+      const newTransaction = await Transactions.createTransaction({
         ...req.body,
         owner: req.user._id,
       });
+      const { _id } = req.user;
       const userId = req.user._id;
-      const userBalance = req.body.balance;
-      const resultBalance = await User.createBalance(userId, userBalance);
+      const userBalance = req.user.balance;
+
+      const transaction = await Transaction.findOne({ owner: _id }).sort({
+        $natural: -1,
+      });
+      const { sum, type } = transaction;
+      const updateBalance =
+        type === "cost" ? userBalance - sum : userBalance + sum;
+
+      if (updateBalance < 0) {
+        res.status(HttpCode.BAD_REQUEST).json({
+          status: "error",
+          code: HttpCode.BAD_REQUEST,
+          message: "There is no money for this purchase",
+        });
+      }
+
+      const resultBalance = await User.createBalance(userId, updateBalance);
       if (!resultBalance) {
         return res.status(HttpCode.NOT_FOUND).json({
           status: "error",
@@ -20,6 +38,7 @@ class TransactionControllers {
         });
       }
       const { balance } = resultBalance;
+
       res.status(HttpCode.CREATED).json({
         status: "Created",
         code: HttpCode.CREATED,
@@ -35,7 +54,7 @@ class TransactionControllers {
   async deleteTransaction(req, res, next) {
     try {
       const { id } = req.params;
-      const remove = await Transaction.deleteTransaction(id);
+      const remove = await Transactions.deleteTransaction(id);
       if (!remove) {
         res.status(HttpCode.NOT_FOUND).json({
           status: "error",
@@ -55,7 +74,7 @@ class TransactionControllers {
     try {
       const { date } = req.params;
 
-      const result = await Transaction.getTransactionByDate({
+      const result = await Transactions.getTransactionByDate({
         owner: req.user._id,
         date,
       });
@@ -77,7 +96,7 @@ class TransactionControllers {
         if (periodLength <= 4) {
           const year = period;
 
-          const result = await Transaction.getTransactionByPeriod({
+          const result = await Transactions.getTransactionByPeriod({
             owner: req.user._id,
             year,
           });
@@ -92,7 +111,7 @@ class TransactionControllers {
           const newPeriod = period.split(".");
           const month = newPeriod[0];
           const year = newPeriod[1];
-          const result = await Transaction.getTransactionByYearAndMonth({
+          const result = await Transactions.getTransactionByYearAndMonth({
             owner: req.user._id,
             month,
             year,
@@ -111,7 +130,7 @@ class TransactionControllers {
     try {
       const { id } = req.params;
       const userTransaction = req.body;
-      const result = await Transaction.updateTransaction(id, userTransaction);
+      const result = await Transactions.updateTransaction(id, userTransaction);
       if (!result) {
         return res.status(HttpCode.NOT_FOUND).json({
           status: "error",
