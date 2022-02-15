@@ -37,6 +37,8 @@ class AuthControllers {
         userData.verifyTokenEmail
       );
 
+      console.log("isSend:", isSend);
+
       delete userData.verifyTokenEmail;
       return res.status(HttpCode.CREATED).json({
         status: "success",
