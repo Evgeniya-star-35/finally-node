@@ -133,103 +133,23 @@ class AuthControllers {
     try {
       const userId = req.user.id;
       const userBalance = req.body.balance;
-      const { _id } = req.user;
-
-      console.log(userBalance);
-
-      const result = await User.findByIdAndUpdate(
-        userId,
-        { userBalance },
-        { new: true }
-      );
-
-      // const result = await Users.createBalance(userId, userBalance);
+      const result = await Users.createBalance(userId, userBalance);
       if (result) {
-        res.status(HttpCode.OK).json({
+        return res.status(HttpCode.OK).json({
           status: "success",
           code: HttpCode.OK,
           data: { balance: result.balance },
         });
       }
-      // res.status(HttpCode.NOT_FOUND).json({
-      //   status: "error",
-      //   code: HttpCode.NOT_FOUND,
-      //   message: "Not found",
-      // });
 
-      const transaction = await Transaction.findOne({ owner: _id }).sort({
-        $natural: -1,
-      });
-
-      console.log(transaction);
-
-      const { sum, type } = transaction;
-
-      const updateBalance =
-        (await type) === "cost" ? userBalance - sum : userBalance + sum;
-
-      console.log("updateBalance:", updateBalance);
-
-      // if (updateBalance < 0) {
-      //   return res.status(HttpCode.BAD_REQUEST).json({
-      //     status: "error",
-      //     code: HttpCode.BAD_REQUEST,
-      //     message: "There is no money for this purchase",
-      //   });
-      // }
-
-      const newBalance = await User.findByIdAndUpdate(
-        { _id },
-        { balance: updateBalance },
-        { new: true }
-      );
-
-      console.log("newBalance:", newBalance);
-
-      const { balance } = newBalance;
-
-      console.log(balance);
-
-      return res.status(HttpCode.OK).json({
-        status: "success",
-        code: HttpCode.OK,
-        balance,
+      return res.status(HttpCode.NOT_FOUND).json({
+        status: "error",
+        code: HttpCode.NOT_FOUND,
+        message: "Not found",
       });
     } catch (error) {
       next(error);
     }
-  }
-
-  async currentBalance(req, res, next) {
-    const { _id } = req.user;
-    const balance = req.user.balance;
-
-    const transaction = await Transaction.findOne({ owner: _id }).sort({
-      $natural: -1,
-    });
-
-    const { sum, type } = transaction;
-    const updateBalance = type === "cost" ? balance - sum : balance + sum;
-
-    if (updateBalance < 0) {
-      res.status(HttpCode.BAD_REQUEST).json({
-        status: "error",
-        code: HttpCode.BAD_REQUEST,
-        message: "There is no money for this purchase",
-      });
-    }
-
-    await User.findByIdAndUpdate(
-      { _id },
-      { balance: updateBalance },
-      { new: true }
-    );
-
-    res.status(HttpCode.OK).json({
-      status: "success",
-      code: HttpCode.OK,
-      updateBalance,
-    });
   }
 
   async aggregationBalance(req, res, next) {
