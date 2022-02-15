@@ -6,13 +6,13 @@ class EmailService {
 
     switch (env) {
       case "development":
-        this.link = process.env.BASE_URL;
+        this.link = process.env.SEND_EMAIL_URL;
         break;
       case "production":
         this.link = process.env.BACK_BASE;
         break;
       default:
-        this.link = process.env.LINK_HOST_DEFAULT;
+        this.link = process.env.FRONTEND_URL;
         break;
     }
   }
@@ -40,7 +40,8 @@ class EmailService {
           button: {
             color: "#FF751D",
             text: "Confirm your account",
-            link: `${this.link}/api/users/verify/${verifyToken}`,
+            link: `${this.link}`,
+            // link: `${this.link}/api/users/verify/${verifyToken}`,
           },
         },
         outro:
