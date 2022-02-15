@@ -133,19 +133,67 @@ class AuthControllers {
     try {
       const userId = req.user.id;
       const userBalance = req.body.balance;
-      const result = await Users.createBalance(userId, userBalance);
+      const { _id } = req.user;
+
+      console.log(userBalance);
+
+      const result = await User.findByIdAndUpdate(
+        userId,
+        { userBalance },
+        { new: true }
+      );
+
+      // const result = await Users.createBalance(userId, userBalance);
       if (result) {
-        return res.status(HttpCode.OK).json({
+        res.status(HttpCode.OK).json({
           status: "success",
           code: HttpCode.OK,
           data: { balance: result.balance },
         });
       }
+      // res.status(HttpCode.NOT_FOUND).json({
+      //   status: "error",
+      //   code: HttpCode.NOT_FOUND,
+      //   message: "Not found",
+      // });
 
-      return res.status(HttpCode.NOT_FOUND).json({
-        status: "error",
-        code: HttpCode.NOT_FOUND,
-        message: "Not found",
+      const transaction = await Transaction.findOne({ owner: _id }).sort({
+        $natural: -1,
+      });
+
+      console.log(transaction);
+
+      const { sum, type } = transaction;
+
+      const updateBalance =
+        (await type) === "cost" ? userBalance - sum : userBalance + sum;
+
+      console.log("updateBalance:", updateBalance);
+
+      // if (updateBalance < 0) {
+      //   return res.status(HttpCode.BAD_REQUEST).json({
+      //     status: "error",
+      //     code: HttpCode.BAD_REQUEST,
+      //     message: "There is no money for this purchase",
+      //   });
+      // }
+
+      const newBalance = await User.findByIdAndUpdate(
+        { _id },
+        { balance: updateBalance },
+        { new: true }
+      );
+
+      console.log("newBalance:", newBalance);
+
+      const { balance } = newBalance;
+
+      console.log(balance);
+
+      return res.status(HttpCode.OK).json({
+        status: "success",
+        code: HttpCode.OK,
+        balance,
       });
     } catch (error) {
       next(error);
@@ -164,7 +212,7 @@ class AuthControllers {
     const updateBalance = type === "cost" ? balance - sum : balance + sum;
 
     if (updateBalance < 0) {
-      return res.status(HttpCode.BAD_REQUEST).json({
+      res.status(HttpCode.BAD_REQUEST).json({
         status: "error",
         code: HttpCode.BAD_REQUEST,
         message: "There is no money for this purchase",
