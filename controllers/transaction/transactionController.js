@@ -6,13 +6,13 @@ const Transaction = require("../../model/transaction");
 class TransactionControllers {
   async createTransaction(req, res, next) {
     try {
+      const { _id } = req.user;
+      const userId = req.user._id;
+      const userBalance = req.user.balance;
       const newTransaction = await Transactions.createTransaction({
         ...req.body,
         owner: req.user._id,
       });
-      const { _id } = req.user;
-      const userId = req.user._id;
-      const userBalance = req.user.balance;
 
       const transaction = await Transaction.findOne({ owner: _id }).sort({
         $natural: -1,
@@ -22,7 +22,7 @@ class TransactionControllers {
         type === "cost" ? userBalance - sum : userBalance + sum;
 
       if (updateBalance < 0) {
-        res.status(HttpCode.BAD_REQUEST).json({
+        return res.status(HttpCode.BAD_REQUEST).json({
           status: "error",
           code: HttpCode.BAD_REQUEST,
           message: "There is no money for this purchase",
@@ -54,17 +54,45 @@ class TransactionControllers {
   async deleteTransaction(req, res, next) {
     try {
       const { id } = req.params;
-      const remove = await Transactions.deleteTransaction(id);
-      if (!remove) {
-        res.status(HttpCode.NOT_FOUND).json({
+      const userId = req.user._id;
+      const userBalance = req.user.balance;
+
+      const removeTransaction = await Transactions.deleteTransaction(id);
+      if (!removeTransaction) {
+        return res.status(HttpCode.NOT_FOUND).json({
           status: "error",
           code: HttpCode.NOT_FOUND,
           message: "Id of transaction not found",
         });
       }
-      res
-        .status(HttpCode.OK)
-        .json({ code: HttpCode.OK, message: "Your transaction was delete" });
+      // res
+      //   .status(HttpCode.OK)
+      //   .json({ code: HttpCode.OK, message: "Your transaction was delete" });
+
+      const { sum, type } = removeTransaction;
+      const updateBalance =
+        type === "cost" ? userBalance + sum : userBalance - sum;
+
+      if (updateBalance < 0) {
+        throw new BadRequest("There are no enough money for this purchase");
+      }
+
+      const resultBalance = await User.createBalance(userId, updateBalance);
+      if (!resultBalance) {
+        return res.status(HttpCode.NOT_FOUND).json({
+          status: "error",
+          code: HttpCode.NOT_FOUND,
+          message: "Not Found",
+        });
+      }
+
+      const { balance } = resultBalance;
+
+      return res.status(HttpCode.CREATED).json({
+        status: "Created",
+        code: HttpCode.CREATED,
+        balance,
+      });
     } catch (error) {
       console.log(error.message);
     }
