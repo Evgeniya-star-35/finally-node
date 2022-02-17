@@ -144,6 +144,7 @@ class TransactionControllers {
             month,
             year,
           });
+
           return res
             .status(HttpCode.OK)
             .json({ status: "success", code: HttpCode.OK, result });

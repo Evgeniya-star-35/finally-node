@@ -172,7 +172,7 @@ class AuthControllers {
       const userFromToken = await Users.findByVerifyToken(req.params.token);
       if (userFromToken) {
         await Users.updateVerify(userFromToken.id, true);
-        return res.redirect(process.env.FRONTEND_URL);
+        return res.redirect("https://finally-react-project.netlify.app");
         // return res.redirect("http://localhost:3000");
       }
       return res.status(HttpCode.BAD_REQUEST).json({
